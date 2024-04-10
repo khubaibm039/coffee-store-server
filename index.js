@@ -86,7 +86,13 @@ async function run() {
         });
 
         // user collection
-        app.post("/user", async (req, res) => {
+        app.get("/users", async (req, res) => {
+            const cursor = userCollection.find();
+            const result = await cursor.toArray(cursor);
+            res.send(result);
+        });
+
+        app.post("/users", async (req, res) => {
             const user = req.body;
             console.log(user);
             const result = await userCollection.insertOne(user);
