@@ -12,7 +12,7 @@ app.use(express.json());
 const userName = process.env.DB_USER;
 const password = process.env.BD_PASSWORD;
 
-const uri = `mongodb+srv://${userName}:${password}@cluster0.ag6bkre.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const uri = `mongodb+srv://${userName}:${password}@cluster0.ag6bkre.mongodb.net/`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -30,6 +30,8 @@ async function run() {
 
         const database = client.db("coffeeDB");
         const coffeeCollection = database.collection("coffee");
+
+        const userCollection = client.db("coffeeDB").collection("user");
 
         app.get("/coffee", async (req, res) => {
             const cursor = coffeeCollection.find();
@@ -80,6 +82,14 @@ async function run() {
             console.log(id);
             const filter = { _id: new ObjectId(id) };
             const result = await coffeeCollection.deleteOne(filter);
+            res.send(result);
+        });
+
+        // user collection
+        app.post("/user", async (req, res) => {
+            const user = req.body;
+            console.log(user);
+            const result = await userCollection.insertOne(user);
             res.send(result);
         });
 
