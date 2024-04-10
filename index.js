@@ -98,6 +98,26 @@ async function run() {
             const result = await userCollection.insertOne(user);
             res.send(result);
         });
+        app.patch("/users", async (req, res) => {
+            const user = req.body;
+            console.log(user);
+            const filter = { email: user.email };
+            const updateDoc = {
+                $set: {
+                    lastLoggedAt: user.lastLoggedAt,
+                },
+            };
+            const result = await userCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        });
+
+        app.delete("/users/:id", async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const filter = { _id: new ObjectId(id) };
+            const result = await userCollection.deleteOne(filter);
+            res.send(result);
+        });
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
